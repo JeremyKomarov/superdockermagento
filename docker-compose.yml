@@ -1,0 +1,112 @@
+version: "3"
+
+services:
+  app:
+    build:
+      context: .docker/nginx
+    container_name: ${PROJECT_NAME}_app
+    ports:
+      - "80:8000"
+      - "443:8443"
+    links:
+      - db
+      - phpfpm
+    volumes: &appvolumes
+      - ~/.composer:/var/www/.composer:cached
+      - ./www:/var/www/html
+      - sock-data:/sock
+      - ssl-data:/etc/nginx/certs
+
+  phpfpm:
+    build:
+      context: .docker/PHP/$PHP_VERSION
+    container_name: ${PROJECT_NAME}_php
+    links:
+      - db
+    volumes: *appvolumes
+
+  db:
+    build:
+      context: .docker/mariadb
+      args:
+        - MARIADB_VERSION=${MARIADB_VERSION}
+    container_name: ${PROJECT_NAME}_db
+    environment:
+      - MARIADB_DATABASE=${MARIADB_DATABASE}
+      - MARIADB_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD}
+    ports:
+      - "3306:3306"
+    volumes:
+      - mariadb-data:/var/lib/mysql
+
+  phpmyadmin:
+    build:
+      context: .docker/phpmyadmin
+    container_name: ${PROJECT_NAME}_phpmyadmin
+    environment:
+      - PMA_USER=${PMA_USER}
+      - PMA_PASSWORD=${PMA_PASSWORD}
+    ports:
+      - "8080:80"
+    links:
+      - db:db
+    depends_on:
+      - db
+
+  mailhog:
+    build:
+      context: .docker/mailhog
+    container_name: ${PROJECT_NAME}_mailhog
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+
+  elasticsearch:
+    build:
+      context: .docker/elasticsearch
+      args:
+        - ELASTICSEARCH_VERSION=${ELASTICSEARCH_VERSION}
+    container_name: ${PROJECT_NAME}_elasticsearch
+    deploy:
+      resources:
+        limits:
+          memory: 5G
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+      - "discovery.type=single-node"
+
+  rabbitmq:
+    build:
+      context: .docker/rabbitmq
+      args:
+        - RABBITMQ_VERSION=${RABBITMQ_VERSION}
+    container_name: ${PROJECT_NAME}_rabbitmq
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    environment:
+      - RABBITMQ_HOST=${RABBITMQ_HOST}
+      - RABBITMQ_PORT=${RABBITMQ_PORT}
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
+      - RABBITMQ_DEFAULT_VHOST=${RABBITMQ_DEFAULT_VHOST}
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+
+  redis:
+    build:
+      context: .docker/redis
+      args:
+        - REDIS_VERSION=${REDIS_VERSION}
+    container_name: ${PROJECT_NAME}_redis
+    ports:
+      - "6379:6379"
+
+volumes:
+  app-data:
+  mariadb-data:
+  sock-data:
+  ssl-data:
+  rabbitmq-data:
