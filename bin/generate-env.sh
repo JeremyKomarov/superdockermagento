@@ -79,6 +79,12 @@ return [
         'ec_cache' => 1,
         'epost_data' => 1
     ],
+    'downloadable_domains' => [
+        ''
+    ],
+    'install' => [
+        'date' => ''
+    ],
     'system' => [
         'default' => [
             'web' => [
@@ -113,5 +119,7 @@ return [
     ]
 ];
 EOF
+
+chmod 700 ./www/app/etc/env.php
 
 echo "env.php file generated successfully!"
