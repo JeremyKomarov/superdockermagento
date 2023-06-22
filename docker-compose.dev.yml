@@ -14,14 +14,14 @@ services:
       - ./www/app/etc:/var/www/html/app/etc:cached
       - ./www/composer.json:/var/www/html/composer.json:cached
       - ./www/composer.lock:/var/www/html/composer.lock:cached
-      - ./www/nginx.conf.sample:/var/www/html/nginx.conf:cached
+      # - ./www/nginx.conf.sample:/var/www/html/nginx.conf:cached
       - ./www/auth.json:/var/www/html/auth.json:cached
       #- ./www/m2-hotfixes:/var/www/html/m2-hotfixes:cached
       #- ./www/patches:/var/www/html/patches:cached
       #- ./www/var/log:/var/www/html/var/log:cached
       #- ./www/var/report:/var/www/html/var/report:cached
       # To sync your SSH to the container, uncomment the following line:
-      - ~/.www/id_rsa:/var/www/.ssh/id_rsa:cached
+      - ~/.ssh/id_rsa:/var/www/.ssh/id_rsa:cached
       # Linux only: remove the above lines and mount the entire src directory with:
       #- ./www:/var/www/html:cached
 
