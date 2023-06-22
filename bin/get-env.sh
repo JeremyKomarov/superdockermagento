@@ -1,6 +1,6 @@
 #!/bin/bash
 
-magentoVersion=$(jq -r '.version' ./www/composer.json)
+magentoVersion=$(grep -o '"version": "[^"]*' ./www/composer.json | awk -F'"' '{print $4}')
 
 envFile="./.env"
 
