@@ -3,7 +3,7 @@ SHELL := /bin/bash
 bash:
 	@./bin/bash
 
-cf:
+cc:
 	@./bin/magento cache:clean
 
 cf:
