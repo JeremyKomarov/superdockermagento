@@ -36,7 +36,7 @@ elif [[ $magentoVersion =~ ^(2.4.6)$ ]]; then
 fi
 
 sed -i '' -E "s/PROJECT_VERSION=.*/PROJECT_VERSION=$magentoVersion/" "$envFile"
-echo "Magento Version ($magentoVersion)"
+echo "Magento Version $magentoVersion"
 
 sed -i '' -E "s/PHP_VERSION=.*/PHP_VERSION=$phpVersion/" "$envFile"
 echo "PHP VERSION $phpVersion"

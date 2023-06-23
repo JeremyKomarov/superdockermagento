@@ -5,8 +5,14 @@ source .env
 HOSTS_FILE="/etc/hosts"
 HOST="127.0.0.1  $PROJECT_NAME.$DOMAIN"
 
-if [[ ! -f "$HOSTS_FILE" ]]; then
-    echo "$HOSTS_FILE does not exist"
+if [[ -z "$PROJECT_NAME" ]]; then
+    echo "Project Name is not filled"
+    exit 1
+elif [[ -z "$DOMAIN" ]]; then
+    echo "Domain is not filled"
+    exit 1
+elif [[ ! -f "$HOSTS_FILE" ]]; then
+    echo "$HOSTS_FILE Does not exist"
     exit 1
 fi
 
