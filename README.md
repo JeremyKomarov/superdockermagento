@@ -9,4 +9,5 @@ Follow these steps to set up the project:
 5. 'bin/start' To start the project containers.
 6. 'bin/composer install' To install project dependencies.
 7. 'bin/mysql < db.sql' To import the database.
+# If you have any media files to add, add it now to ./www/pub/media
 8. 'make install' To complete the installation process.
