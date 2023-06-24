@@ -11,3 +11,6 @@ Follow these steps to set up the project:
 7. 'bin/mysql < db.sql' To import the database.
 # If you have any media files to add, add it now to ./www/pub/media
 8. 'make install' To complete the installation process.
+
+#If project is 2.3.2 version do steps 1-7 and then do this:
+8. 'make install-old' To complete the installatin procces.

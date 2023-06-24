@@ -4,12 +4,20 @@ bash:
 	@./bin/bash
 
 env:
+	@./bin/set-host
 	@./bin/get-env
 	@./bin/generate-env
-	@./bin/set-host
 
 install:
 	@./bin/magento setup:upgrade
+	@./bin/magento setup:static-content:deploy -f
+	@./bin/magento setup:di:compile
+	@./bin/magento cache:flush
+
+install-old:
+	@./bin/magento setup:config:set
+	@./bin/magento module:enable --all
+	@./bin/magento se:up
 	@./bin/magento setup:static-content:deploy -f
 	@./bin/magento setup:di:compile
 	@./bin/magento cache:flush
