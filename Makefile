@@ -14,7 +14,7 @@ install:
 	@./bin/magento setup:di:compile
 	@./bin/magento cache:flush
 
-install-old:
+install232:
 	@./bin/magento setup:config:set
 	@./bin/magento module:enable --all
 	@./bin/magento se:up
