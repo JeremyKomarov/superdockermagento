@@ -1,0 +1,20 @@
+#!/bin/bash
+
+source .env
+
+oldBaseUrlQuery="SELECT value FROM core_config_data WHERE path = 'web/unsecure/base_url'"
+oldBaseUrl=$(bin/mysql -h "$MARIADB_HOST" -u "$MARIADB_ROOT_USER" -p"$MARIADB_ROOT_PASSWORD" -D "$MARIADB_DATABASE" -se "$oldBaseUrlQuery")
+
+newBaseUnsecureUrl=$PROJECT_US_URL
+newBaseSecureUrl=$PROJECT_S_URL
+
+updateSecureUrlQuery="UPDATE core_config_data SET value = '$newBaseUnsecureUrl' WHERE path = 'web/unsecure/base_url'"
+updateUnsecureUrlQuery="UPDATE core_config_data SET value = '$newBaseSecureUrl' WHERE path = 'web/secure/base_url'"
+updateCookieQuery="UPDATE core_config_data SET value = '' WHERE path = 'web/cookie/cookie_domain'"
+
+bin/mysql -h "$MARIADB_HOST" -u "$MARIADB_ROOT_USER" -p"$MARIADB_ROOT_PASSWORD" -D "$MARIADB_DATABASE" -e "$updateSecureUrlQuery"
+bin/mysql -h "$MARIADB_HOST" -u "$MARIADB_ROOT_USER" -p"$MARIADB_ROOT_PASSWORD" -D "$MARIADB_DATABASE" -e "$updateUnsecureUrlQuery"
+bin/mysql -h "$MARIADB_HOST" -u "$MARIADB_ROOT_USER" -p"$MARIADB_ROOT_PASSWORD" -D "$MARIADB_DATABASE" -e "$updateCookieQuery"
+
+echo "Base URLs updated to "${PROJECT_NAME}.${DOMAIN}" and cookie domain updated to null."
+

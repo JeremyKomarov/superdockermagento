@@ -12,6 +12,7 @@ install:
 	@./bin/magento setup:upgrade
 	@./bin/magento setup:static-content:deploy -f
 	@./bin/magento setup:di:compile
+	@./bin/set-urls
 	@./bin/magento cache:flush
 
 install232:
@@ -20,7 +21,11 @@ install232:
 	@./bin/magento se:up
 	@./bin/magento setup:static-content:deploy -f
 	@./bin/magento setup:di:compile
+	@./bin/set-urls
 	@./bin/magento cache:flush
+
+admin:
+	@./bin/create-admin
 
 se-up:
 	@./bin/magento setup:up

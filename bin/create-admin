@@ -1,0 +1,7 @@
+#!/bin/bash
+
+source .env
+
+bin/magento admin:user:create --admin-user=$USER --admin-password=$PASSWORD --admin-email=$EMAIL --admin-firstname=$FIRST_NAME --admin-lastname=$LAST_NAME
+
+echo 'admin created'
