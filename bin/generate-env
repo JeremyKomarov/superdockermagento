@@ -92,11 +92,12 @@ return [
             'web' => [
                 'unsecure' => [
                     'base_url' => "${PROJECT_US_URL}",
-                    'base_link_url' => '{{unsecure_base_url}}'
                 ],
                 'secure' => [
                     'base_url' => "${PROJECT_S_URL}",
-                    'base_link_url' => '{{secure_base_url}}'
+                    'offloader_header' => 'X-Forwarded-Proto',
+                    'use_in_frontend' => '1',
+                    'use_in_adminhtml' => '1'
                 ],
                 'default' => [
                     'front' => 'cms'
