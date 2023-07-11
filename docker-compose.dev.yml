@@ -23,8 +23,6 @@ services:
 
   phpfpm:
     volumes: *appvolumes
-    extra_hosts:
-      - "host.docker.internal:172.17.0.1"
 
   # Disabling cron by default as it uses higher CPU, enable if needed
   #cron:
