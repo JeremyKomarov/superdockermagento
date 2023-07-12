@@ -18,6 +18,7 @@ RUN apt-get update && apt-get install -y \
   libxslt1-dev \
   libzip-dev \
   lsof \
+  msmtp \
   default-mysql-client \
   vim \
   zip \
@@ -62,9 +63,7 @@ RUN cd /tmp \
 
 RUN pecl channel-update pecl.php.net \
   && pecl install xdebug-2.9.8 \
-  && docker-php-ext-enable xdebug \
-    && echo "xdebug.mode=debug" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
-        && echo "xdebug.client_host = host.docker.internal" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+  && docker-php-ext-enable xdebug
 
 RUN pecl install ssh2-1.2 \
   && docker-php-ext-enable ssh2
@@ -86,7 +85,6 @@ RUN apt-get install -y gnupg \
   && chown app:app /var/www/.config /var/www/.npm \
   && npm install -g grunt-cli
 
-RUN apt-get install -y msmtp mailutils
 COPY conf/msmtprc /etc/msmtprc
 
 RUN curl -sS https://getcomposer.org/installer | \
@@ -94,6 +92,7 @@ RUN curl -sS https://getcomposer.org/installer | \
 
 COPY conf/www.conf /usr/local/etc/php-fpm.d/
 COPY conf/php.ini /usr/local/etc/php/
+COPY conf/xdebug.ini /usr/local/etc/php/conf.d
 COPY conf/php-fpm.conf /usr/local/etc/
 COPY conf/auth.json /root/.composer/auth.json
 
@@ -101,7 +100,5 @@ RUN mkdir -p /etc/nginx/html /var/www/html /sock \
   && chown -R app:app /etc/nginx /var/www /usr/local/etc/php/conf.d /sock
 
 USER app:app
-
-VOLUME /var/www
 
 WORKDIR /var/www/html
