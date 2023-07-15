@@ -3,11 +3,6 @@
 source .env
 
 cat > ./www/app/etc/env.php <<EOF
-#!/bin/bash
-
-source .env
-
-cat > ./www/app/etc/env.php <<EOF
 <?php
   return [
     'backend' => [
@@ -33,7 +28,7 @@ cat > ./www/app/etc/env.php <<EOF
         'table_prefix' => '',
         'connection' => [
             'default' => [
-                'host' => '${PROJECT_VERSION}_db',
+                'host' => '${PROJECT_NAME}_db',
                 'dbname' => '${MARIADB_DATABASE}',
                 'username' => '${MARIADB_ROOT_USER}',
                 'password' => '${MARIADB_ROOT_PASSWORD}',
