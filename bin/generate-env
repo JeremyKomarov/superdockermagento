@@ -169,8 +169,3 @@ EOF
 chmod 700 ./www/app/etc/env.php
 
 echo "env.php file generated successfully!"
-EOF
-
-chmod 700 ./www/app/etc/env.php
-
-echo "env.php file generated successfully!"
