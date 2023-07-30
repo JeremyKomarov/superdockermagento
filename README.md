@@ -1,4 +1,6 @@
 # Super Docker Magento
+Maintain By Jeremy Komarov
+
 Before proceeding, ensure that you have the database inside the docke folder and project repository.
 
 Follow these steps to set up the project:
