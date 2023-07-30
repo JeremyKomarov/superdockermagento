@@ -1,5 +1,6 @@
-# Super Docker Magento
 Maintain By Jeremy Komarov
+
+# Super Docker Magento
 
 Before proceeding, ensure that you have the database inside the docke folder and project repository.
 
