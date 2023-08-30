@@ -15,7 +15,7 @@ install:
 	@./bin/set-urls
 	@./bin/magento cache:flush
 
-install232:
+install-old:
 	@./bin/magento setup:config:set
 	@./bin/magento module:enable --all
 	@./bin/magento se:up
