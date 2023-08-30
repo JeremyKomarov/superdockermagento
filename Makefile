@@ -7,6 +7,8 @@ env:
 	@./bin/set-host
 	@./bin/get-env
 	@./bin/generate-env
+	@./bin/fixowns
+	@./bin/fixperms
 
 install:
 	@./bin/magento setup:upgrade
