@@ -25,9 +25,9 @@ Maintained By Jeremy Komarov
 ## Docker Environment and Project Setup
 1. Inside ".env" file set domain and project name.
 2. Clone project into "www" folder within Docker directory.
-3. Run "make env" to set environment.
+3. Run "make set-env" to set environment.
 4. Run "bin/start" to start containers.
-5. Run "bin/composer install" to dependencies.
+5. Run "bin/composer install" to install dependencies.
 6. Run "bin/mysql < {db_name}.sql" to import the database.
 7. Add media files to "./www/pub/media".
    - For Magento 2.3.2:

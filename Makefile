@@ -3,12 +3,11 @@ SHELL := /bin/bash
 bash:
 	@./bin/bash
 
-env:
+set-env:
 	@./bin/set-host
 	@./bin/get-env
 	@./bin/generate-env
-	@./bin/fixowns
-	@./bin/fixperms
+	@./bin/check-nginx
 
 install:
 	@./bin/magento setup:upgrade

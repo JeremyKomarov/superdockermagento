@@ -92,7 +92,7 @@ RUN curl -sS https://getcomposer.org/installer | \
 
 COPY conf/www.conf /usr/local/etc/php-fpm.d/
 COPY conf/php.ini /usr/local/etc/php/
-COPY conf/xdebug.ini /usr/local/etc/php/conf.d
+COPY conf/xdebug.ini /usr/local/etc/php/conf.d/
 COPY conf/php-fpm.conf /usr/local/etc/
 COPY conf/auth.json /root/.composer/auth.json
 
