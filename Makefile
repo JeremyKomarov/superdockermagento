@@ -4,10 +4,10 @@ bash:
 	@./bin/bash
 
 set-env:
+	@./bin/check-nginx
 	@./bin/set-host
 	@./bin/get-env
 	@./bin/generate-env
-	@./bin/check-nginx
 
 install:
 	@./bin/magento setup:upgrade

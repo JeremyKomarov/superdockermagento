@@ -4,9 +4,8 @@ target_file="nginx.conf.sample"
 utils_folder="$PWD/.docker/utils"
 www_folder="$PWD/www"
 
-if [ -f "$www_folder/$target_file" ]; then
-    echo "The file $target_file exists in $www_folder."
-else
-    echo "The file $target_file does not exist in $www_folder."
+if [ ! -f "$www_folder/$target_file" ]; then
+    echo "The file $target_file does not exist."
     cp "$utils_folder/$target_file" "$www_folder/$target_file"
+    echo "Copied $target_file ."
 fi
