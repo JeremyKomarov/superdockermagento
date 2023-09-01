@@ -2,19 +2,45 @@
 
 source .env
 
-oldBaseUrlQuery="SELECT value FROM core_config_data WHERE path = 'web/unsecure/base_url'"
-oldBaseUrl=$(bin/mysql -h "$MARIADB_HOST" -u "$MARIADB_ROOT_USER" -p"$MARIADB_ROOT_PASSWORD" -D "$MARIADB_DATABASE" -se "$oldBaseUrlQuery")
+old_base_url_query="SELECT value FROM core_config_data WHERE path = 'web/unsecure/base_url' LIMIT 1"
+old_base_url_value=$(bin/mysql -h "$MARIADB_HOST" -u "$MARIADB_ROOT_USER" -p"$MARIADB_ROOT_PASSWORD" -D "$MARIADB_DATABASE" -se "$old_base_url_query")
 
-newBaseUnsecureUrl=$PROJECT_US_URL
-newBaseSecureUrl=$PROJECT_S_URL
+new_base_url_value="jr.lock"
 
-updateSecureUrlQuery="UPDATE core_config_data SET value = '$newBaseUnsecureUrl' WHERE path = 'web/unsecure/base_url'"
-updateUnsecureUrlQuery="UPDATE core_config_data SET value = '$newBaseSecureUrl' WHERE path = 'web/secure/base_url'"
-updateCookieQuery="UPDATE core_config_data SET value = '' WHERE path = 'web/cookie/cookie_domain'"
+if [[ $old_base_url_value == https://* ]]; then
+  old_base_url_value_extract="${old_base_url_value#https://}"
+elif [[ $old_base_url_value == http://* ]]; then
+  old_base_url_value_extract="${old_base_url_value#http://}"
+else
+  old_base_url_value_extract="$old_base_url_value"
+fi
 
-bin/mysql -h "$MARIADB_HOST" -u "$MARIADB_ROOT_USER" -p"$MARIADB_ROOT_PASSWORD" -D "$MARIADB_DATABASE" -e "$updateSecureUrlQuery"
-bin/mysql -h "$MARIADB_HOST" -u "$MARIADB_ROOT_USER" -p"$MARIADB_ROOT_PASSWORD" -D "$MARIADB_DATABASE" -e "$updateUnsecureUrlQuery"
-bin/mysql -h "$MARIADB_HOST" -u "$MARIADB_ROOT_USER" -p"$MARIADB_ROOT_PASSWORD" -D "$MARIADB_DATABASE" -e "$updateCookieQuery"
+old_base_url_value_extract="${old_base_url_value_extract%/*}"
 
-echo "Base URLs updated to "${PROJECT_NAME}.${DOMAIN}" and cookie domain updated to null."
+matching_columns_query="SELECT config_id, path, value FROM core_config_data WHERE value LIKE '%$old_base_url_value_extract%';"
+matching_columns=$(
+  bin/mysql -h "$MARIADB_HOST" -u "$MARIADB_ROOT_USER" -p"$MARIADB_ROOT_PASSWORD" -D "$MARIADB_DATABASE" -se "$matching_columns_query"
+)
 
+declare -a updates=()
+
+while IFS= read -r line; do
+  config_id=$(echo "$line" | awk '{print $1}')
+  path=$(echo "$line" | awk '{print $2}')
+  value=$(echo "$line" | awk '{$1=$2=""; print $0}')
+  new_value="${value//$old_base_url_value_extract/$new_base_url_value}"
+  new_value="${new_value#"${new_value%%[![:space:]]*}"}"
+
+  updates+=("$config_id" "$value" "$new_value")
+done <<< "$matching_columns"
+
+for ((i = 0; i < ${#updates[@]}; i += 3)); do
+  config_id="${updates[i]}"
+  old_value="${updates[i + 1]}"
+  new_value="${updates[i + 2]}"
+
+  echo "Updating config_id: $config_id from '$old_value' to '$new_value'"
+
+  update_query="UPDATE core_config_data SET value = '$new_value' WHERE config_id = $config_id;"
+  bin/mysql -h "$MARIADB_HOST" -u "$MARIADB_ROOT_USER" -p"$MARIADB_ROOT_PASSWORD" -D "$MARIADB_DATABASE" -e "$update_query"
+done
