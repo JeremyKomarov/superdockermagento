@@ -2,10 +2,12 @@
 
 source .env
 
+subdomains=("b2b." "b2c.")
+
 old_base_url_query="SELECT value FROM core_config_data WHERE path = 'web/unsecure/base_url' LIMIT 1"
 old_base_url_value=$(bin/mysql -h "$MARIADB_HOST" -u "$MARIADB_ROOT_USER" -p"$MARIADB_ROOT_PASSWORD" -D "$MARIADB_DATABASE" -se "$old_base_url_query")
 
-new_base_url_value="jr.lock"
+new_base_url_value="${PROJECT_NAME}.${DOMAIN}"
 
 if [[ $old_base_url_value == https://* ]]; then
   old_base_url_value_extract="${old_base_url_value#https://}"
@@ -17,6 +19,12 @@ fi
 
 old_base_url_value_extract="${old_base_url_value_extract%/*}"
 
+for subdomain in "${subdomains[@]}"; do
+  if [[ $old_base_url_value_extract == *$subdomain* ]]; then
+    old_base_url_value_extract="${old_base_url_value_extract/$subdomain/}"
+  fi
+done
+
 matching_columns_query="SELECT config_id, path, value FROM core_config_data WHERE value LIKE '%$old_base_url_value_extract%';"
 matching_columns=$(
   bin/mysql -h "$MARIADB_HOST" -u "$MARIADB_ROOT_USER" -p"$MARIADB_ROOT_PASSWORD" -D "$MARIADB_DATABASE" -se "$matching_columns_query"
@@ -25,14 +33,29 @@ matching_columns=$(
 declare -a updates=()
 
 while IFS= read -r line; do
-  config_id=$(echo "$line" | awk '{print $1}')
-  path=$(echo "$line" | awk '{print $2}')
-  value=$(echo "$line" | awk '{$1=$2=""; print $0}')
-  new_value="${value//$old_base_url_value_extract/$new_base_url_value}"
-  new_value="${new_value#"${new_value%%[![:space:]]*}"}"
+  config_id=$(awk '{print $1}' <<< "$line")
+  path=$(awk '{print $2}' <<< "$line")
+  value=$(awk '{$1=$2=""; print $0}' <<< "$line")
+  before_old_base_url="${value%%$old_base_url_value_extract*}"
 
-  updates+=("$config_id" "$value" "$new_value")
+  patterns=(
+    "https://b2b.$old_base_url_value_extract"
+    "http://b2b.$old_base_url_value_extract"
+    "https://b2c.$old_base_url_value_extract"
+    "http://b2c.$old_base_url_value_extract"
+    "https://$old_base_url_value_extract"
+    "http://$old_base_url_value_extract"
+  )
+
+  for pattern in "${patterns[@]}"; do
+    if [[ $value == *"$pattern"* ]]; then
+      new_value="${value//$old_base_url_value_extract/$new_base_url_value}"
+      new_value="${new_value#"${new_value%%[![:space:]]*}"}"
+      updates+=("$config_id" "$value" "$new_value")
+    fi
+  done
 done <<< "$matching_columns"
+
 
 for ((i = 0; i < ${#updates[@]}; i += 3)); do
   config_id="${updates[i]}"
