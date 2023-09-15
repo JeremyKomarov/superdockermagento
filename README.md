@@ -63,3 +63,9 @@ Maintained By Jeremy Komarov
 ### Testing the Debugger
 1. Set a breakpoint at "$bootstrap->run($app)" in "pub/index.php". 
 2. Enter your project's URL in your web browser.
+
+
+## Grunt
+1. Run "make grunt" to install grunt grunt.
+2. Run "make set-grunt" to set grunt
+3. Run "bin/grunt watch" to start grunt watcher
