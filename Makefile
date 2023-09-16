@@ -25,14 +25,18 @@ install-old:
 	@./bin/set-urls
 	@./bin/magento cache:flush
 
-grunt:
-	@./bin/prepare-grunt
+grunt-env:
+	@./bin/grunt-prepare
+	@./bin/grunt-search-themes
+
+grunt-install:
 	@./bin/npm install grunt --save-dev
 	@./bin/npm install -f
 	@./bin/npm update
-	@./bin/npm install grunt-contrib-less
+	@./bin/npm install grunt-contrib-imagemin --save-dev
 
-set-grunt:
+
+grunt-set:
 	@./bin/grunt clean
 	@./bin/grunt exec
 	@./bin/grunt less
