@@ -37,6 +37,8 @@ grunt-install:
 
 
 grunt-set:
+	@./bin/magento deploy:mode:set developer
+	@./bin/grunt refresh
 	@./bin/grunt clean
 	@./bin/grunt exec
 	@./bin/grunt less
