@@ -1,0 +1,66 @@
+#!/bin/bash
+
+project_dir="./www"
+app_dir="./app"
+theme_file_to_search="theme.xml"
+full_path="$project_dir/$app_dir"
+themes_dir="$project_dir/dev/tools/grunt/configs"
+local_themes_file="$themes_dir/local-themes.js"
+temp_themes_file="$themes_dir/temp-local-themes.js"
+
+extract_theme_info() {
+  local theme_xml_file="$1"
+  local theme_name
+  local vendor_name
+  local area
+  local files
+  local locale
+
+  theme_name=$(basename "$(dirname "$theme_xml_file")")
+  vendor_name=$(basename "$(dirname "$(dirname "$theme_xml_file")")")
+
+  if [[ $theme_xml_file =~ [Ee] ]]; then
+    locale="en_US"
+  else
+    locale="he_IL"
+  fi
+
+  if [[ $theme_xml_file == *"/adminhtml/"* ]]; then
+    area="adminhtml"
+    files=("css/styles-old" "css/styles")
+  else
+    area="frontend"
+    files=("css/styles-m" "css/styles-l")
+  fi
+
+  theme_info="$theme_name: {
+    area: '$area',
+    name: '$vendor_name/$theme_name',
+    locale: '$locale',
+    files: ["
+
+  for file in "${files[@]}"; do
+    theme_info+="
+      '$file',"
+  done
+
+  theme_info+="
+    ],
+    dsl: 'less'
+  },"
+
+  if grep -q "$vendor_name/$theme_name" "$local_themes_file"; then
+    continue
+  fi
+
+  if [ -e "$temp_themes_file" ]; then
+    if grep -q "$vendor_name/$theme_name" "$temp_themes_file"; then
+      continue
+    fi
+  fi
+  echo "$theme_info" >> "$temp_themes_file"
+}
+
+find "$full_path" -type f -name "$theme_file_to_search" | while IFS= read -r theme_file; do
+  extract_theme_info "$theme_file"
+done

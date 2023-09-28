@@ -63,3 +63,21 @@ Maintained By Jeremy Komarov
 ### Testing the Debugger
 1. Set a breakpoint at "$bootstrap->run($app)" in "pub/index.php". 
 2. Enter your project's URL in your web browser.
+
+
+## Grunt Setup
+1. Run "make grunt-env" to install grunt grunt.
+2. if file "www/dev/tools/grunt/configs/temp-local-themes.js" created the copy its content and append it to
+   "www/dev/tools/grunt/configs/local-themes.js".
+3. delete "www/dev/tools/grunt/configs/temp-local-themes.js".
+4. Run "make grunt-install" to Install grunt.
+5. Run "make grunt-set" to set grunt.
+6. Run "bin/grunt watch" to start grunt watcher.
+### Adding new theme,
+If added a new theme and grunt allready installed:
+1. Run "bin/grunt-search-themes"
+2. copy content from  "www/dev/tools/grunt/configs/temp-local-themes.js" and append it to
+   "www/dev/tools/grunt/configs/local-themes.js".
+3. delete file "www/dev/tools/grunt/configs/temp-local-themes.js".
+4. Run "make grunt-set" to set grunt.
+5. Run "bin/grunt watch" to start grunt watcher.

@@ -1,0 +1,22 @@
+#!/bin/bash
+
+project_dir="./www"
+
+files=("package.json.sample" "grunt-config.json.sample" "Gruntfile.js.sample")
+
+for file in "${files[@]}"; do
+  files_without_sample="${file%.sample}"
+  cp "$project_dir/$file" "$project_dir/$files_without_sample"
+done
+
+themes_dir="$project_dir/dev/tools/grunt/configs"
+local_themes_file="$themes_dir/local-themes.js"
+themes_file="$themes_dir/themes.js"
+
+if [ ! -e "$local_themes_file" ]; then
+  if [ -e "$themes_file" ]; then
+    cp "$themes_file" "$local_themes_file"
+  else
+    echo "themes.js is not exist"
+  fi
+fi
