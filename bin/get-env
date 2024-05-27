@@ -24,7 +24,7 @@ elif [[ $magentoVersion =~ ^(2.4.[4-5])$ ]]; then
 
 elif [[ $magentoVersion =~ ^(2.4.6)$ ]]; then
     mariadbVersion="10.6"
-    phpVersion="8.1"
+    phpVersion="8.2"
 fi
 
 sed -i '' -E "s/PROJECT_VERSION=.*/PROJECT_VERSION=$magentoVersion/" "$envFile"

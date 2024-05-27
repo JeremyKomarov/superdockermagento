@@ -1,6 +1,9 @@
 FROM php:7.4-fpm-buster
 
 ARG APP_ID=1000
+ARG MAGENTO_BACKEND_URL
+
+ENV MAGENTO_BACKEND_URL=${MAGENTO_BACKEND_URL}
 
 RUN apt-get update && apt-get install -y \
   cron \
