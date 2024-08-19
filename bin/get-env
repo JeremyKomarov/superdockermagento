@@ -6,23 +6,23 @@ envFile="./.env"
 
 sed -i '' -E "s/MAGENTO_VERSION=.*/MAGENTO_VERSION=$magentoVersion/" "$envFile"
 
-if [[ $magentoVersion =~ ^(2.3.[0-2])$ ]]; then
+if [[ $magentoVersion =~ ^2\.3\.[0-2](-p[0-9]+)?$ ]]; then
     mariadbVersion="10.4"
     phpVersion="7.2"
 
-elif [[ $magentoVersion =~ ^(2.3.[3-6])$ ]]; then
+elif [[ $magentoVersion =~ ^2\.3\.[3-6](-p[0-9]+)?$ ]]; then
     mariadbVersion="10.4"
     phpVersion="7.3"
 
-elif [[ $magentoVersion =~ ^(2.3.7|2.4.[0-3])$ ]]; then
+elif [[ $magentoVersion =~ ^2\.3\.7(-p[0-9]+)?$ || $magentoVersion =~ ^2\.4\.[0-3](-p[0-9]+)?$ ]]; then
     mariadbVersion="10.4"
     phpVersion="7.4"
 
-elif [[ $magentoVersion =~ ^(2.4.[4-5])$ ]]; then
+elif [[ $magentoVersion =~ ^2\.4\.[4-5](-p[0-9]+)?$ ]]; then
     mariadbVersion="10.4"
     phpVersion="8.1"
 
-elif [[ $magentoVersion =~ ^(2.4.6)$ ]]; then
+elif [[ $magentoVersion =~ ^2\.4\.[6-7](-p[0-9]+)?$ ]]; then
     mariadbVersion="10.6"
     phpVersion="8.2"
 fi
